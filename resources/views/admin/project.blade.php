@@ -21,16 +21,16 @@
         }
 
         /* .info-text {
-                                                                                                                                                                    margin-top: 8px;
-                                                                                                                                                                    padding: 20px;
-                                                                                                                                                                    border: 1px solid #ccc;
-                                                                                                                                                                    background-color: #212529;
-                                                                                                                                                                    color: white;
-                                                                                                                                                                    width: 349px;
-                                                                                                                                                                    margin-left: -331px;
-                                                                                                                                                                    text-align: left;
+                                                                                                                                                                        margin-top: 8px;
+                                                                                                                                                                        padding: 20px;
+                                                                                                                                                                        border: 1px solid #ccc;
+                                                                                                                                                                        background-color: #212529;
+                                                                                                                                                                        color: white;
+                                                                                                                                                                        width: 349px;
+                                                                                                                                                                        margin-left: -331px;
+                                                                                                                                                                        text-align: left;
 
-                                                                                                                                                                } */
+                                                                                                                                                                    } */
 
         .hover {
             transition: all 0.5s;
@@ -168,6 +168,7 @@
                             <div class="mb-3">
                                 <label for="name" class="form-label">Project Name</label>
                                 <input type="text" class="form-control" id="name" name="name">
+                                <div class="text-danger" id="nameInput"></div>
                             </div>
 
                             <div class="mb-3">
@@ -194,13 +195,13 @@
                                 </div>
                             </div>
 
-                            
+
                             <div class="mb-3">
                                 <label for="exampleFormControlTextarea1" class="form-label">Description</label>
                                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description"></textarea>
                             </div>
-                            <div style="text-align: right" >
-                                <button data-bs-dismiss="modal" class="btn btn-primary" type="text">Submit</button>
+                            <div style="text-align: right">
+                                <button class="btn btn-primary" type="text">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -472,6 +473,14 @@
             $(document).on('submit', '#projectForm', function(e) {
                 e.preventDefault();
 
+                var name = $('#nameInput').val().trim();
+
+                // Check if the name is empty
+                if (name === '') {
+                    // Display validation message
+                    $('#nameInput').text('Name field is required.');
+                    return; // Exit function to prevent form submission
+                }
                 var formData = $(this).serialize();
                 $.ajax({
                     type: 'POST',
@@ -482,6 +491,8 @@
                             $('#content-box').load(window.location.href + ' #content-box');
                             $('#formData').load(window.location.href + ' #formData');
                             $(".project-boxes").html(text).hide().show("easeIn");
+
+                            $('#exampleModal').modal('hide');
                         } else {
                             alert(response.message);
                         }
@@ -504,7 +515,7 @@
                 type: 'DELETE',
                 url: '/admin/dashboard/' + id,
                 data: {
-                    "_token": "{{ csrf_token() }}", 
+                    "_token": "{{ csrf_token() }}",
                     id: id
                 },
                 success: function(response) {
